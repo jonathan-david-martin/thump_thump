@@ -58,11 +58,11 @@ function draw() {
 
       textSize(71);
       fill(0);
-      text('we♡u♡keep♡trying',screenWidth/2,screenHeight/2-60);
+      text('♡u♡keep♡trying♡',screenWidth/2,screenHeight/2-60);
 
       textSize(70);
       fill(255,0,0);
-      text('we♡u♡keep♡trying',screenWidth/2,screenHeight/2-60);
+      text('♡u♡keep♡trying♡',screenWidth/2,screenHeight/2-60);
 
     noLoop();
 
@@ -80,11 +80,11 @@ function draw() {
 
       textSize(71);
       fill(0);
-      text('we♡u',screenWidth/2,screenHeight/2-60);
+      text('♡u♡win♡',screenWidth/2,screenHeight/2-60);
 
       textSize(70);
       fill(255,0,0);
-      text('we♡u',screenWidth/2,screenHeight/2-60);
+      text('♡u♡win♡',screenWidth/2,screenHeight/2-60);
       countDown1.time = '';
       countDown1.update();
 
@@ -107,7 +107,7 @@ function draw() {
       heartArr[i].location.x += heart2.velocity.x*2;
       heartArr[i].location.y += heart2.velocity.y*2;
         heartArr[i].velocity.x+=random(-1,1);
-        heartArr[i].velocity.y+=random(-1,1);
+        heartArr[i].velocity.y+=random(-1,);
       heartArr[i].born = millis();
       heart2.born = millis();
     }
