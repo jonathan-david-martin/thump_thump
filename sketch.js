@@ -26,7 +26,7 @@ function setup() {
   heart2.velocity.setMag(0);
   heart2.player = true;
 
-  countDown1 = new CountDown(100, 100);
+  countDown1 = new CountDown(100, 100,100);
     wave = new p5.Oscillator;
     wave.setType('sine');
 
@@ -62,7 +62,9 @@ function draw() {
       //temp test collision
       //heartArr[i].xVel *= -1;
       //heartArr[i].yVel *= -1;
+        countDown1.score+=10;
       heartArr[i].velocity.add(heart2.velocity);
+        heartArr[i].velocity.add(createVector(random(-0.2, 0.2), random(-0.2, 0.2)));
 
       heartArr[i].location.x += heart2.velocity.x*2;
       heartArr[i].location.y += heart2.velocity.y*2;
@@ -106,13 +108,17 @@ function draw() {
 }
 
 class CountDown {
-  constructor(x, y) {
+  constructor(x, y, availTime) {
     this.x = x;
     this.y = y;
+    this.score = 0;
     this.color = 'white';
+    this.availTime = availTime;
+
   }
   update() {
     this.display();
+    this.time = this.availTime - round( millis() / 1000, 0);
   }
 
   display() {
@@ -120,14 +126,14 @@ class CountDown {
     textFont("Audiowide");
     textSize(75);
     fill(0);
-    text(round(millis() / 1000, 0), this.x, this.y);
+    text( this.time, this.x, this.y);
     textSize(70);
     if (this.color === 'white') {
       fill(255);
     } else if (this.color === 'red') {
       fill(255, 0, 0);
     }
-    text(round(millis() / 1000, 0), this.x, this.y);
+    text( this.time , this.x, this.y);
 
   }
 
@@ -178,7 +184,7 @@ class heart {
               this.blockSize = this.startSize*1.2;
           }
           else{
-              //wave.stop();
+              wave.stop();
               this.blockSize = this.startSize;
           }
 
