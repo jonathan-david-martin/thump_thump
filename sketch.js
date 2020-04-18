@@ -52,6 +52,18 @@ function draw() {
   if (heartArr.length === 0 || heart2.row < 0) {
       countDown1.color = 'red';
       countDown1.update();
+
+      textAlign(CENTER,CENTER);
+
+
+      textSize(71);
+      fill(0);
+      text('we♡u♡keep♡trying',screenWidth/2,screenHeight/2-60);
+
+      textSize(70);
+      fill(255,0,0);
+      text('we♡u♡keep♡trying',screenWidth/2,screenHeight/2-60);
+
     noLoop();
 
   }
@@ -68,7 +80,7 @@ function draw() {
 
       textSize(85);
       fill(0);
-      text('i♡u',screenWidth/2+8,screenHeight/2-25);
+      text('we♡u',screenWidth/2,screenHeight/2-60);
 
       textSize(70);
       fill(255,0,0);
@@ -208,6 +220,10 @@ class heart {
 
 
   update() {
+
+      if(frameCount===1800){
+          this.blockSize*=0.75;
+      }
 
       if(this.player === true){
           if(frameCount%50===0){
