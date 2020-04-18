@@ -55,6 +55,28 @@ function draw() {
 
   }
 
+  if(countDown1.time === 97){
+      textAlign(CENTER,CENTER);
+      textSize(500);
+      fill(255,0,0);
+      text('♡',screenWidth/2,screenHeight/2);
+
+      textSize(350);
+      fill(255);
+      text('♡',screenWidth/2,screenHeight/2);
+
+      textSize(85);
+      fill(0);
+      text('i♡u',screenWidth/2+8,screenHeight/2-25);
+
+      textSize(80);
+      fill(255,0,0);
+      text('i♡u',screenWidth/2+8,screenHeight/2-25);
+
+
+      noLoop();
+  }
+
 
   //check for collision
   for (let i = 0; i < heartArr.length; i++) {
@@ -64,10 +86,14 @@ function draw() {
       //heartArr[i].yVel *= -1;
         countDown1.score+=10;
       heartArr[i].velocity.add(heart2.velocity);
-        heartArr[i].velocity.add(createVector(random(-0.2, 0.2), random(-0.2, 0.2)));
+
+
+        //heartArr[i].velocity.add(createVector(random(-0.2, 0.2), random(-0.2, 0.2)));
 
       heartArr[i].location.x += heart2.velocity.x*2;
       heartArr[i].location.y += heart2.velocity.y*2;
+        heartArr[i].velocity.x+=random(-0.2,0.2);
+        heartArr[i].velocity.y+=random(-0.2,0.2);
       heartArr[i].born = millis();
       heart2.born = millis();
     }
@@ -102,6 +128,14 @@ function draw() {
   //    wave.start();
   //    wave.amp(0.1);
   //}
+    if(frameCount<120){
+        textAlign(CENTER,CENTER);
+        textFont("Audiowide");
+        textSize(100);
+        text("THUMP-THUMP",screenWidth/2,screenHeight/2);
+        textSize(50);
+        text("USE ARROW KEYS",screenWidth/2,screenHeight/2+150);
+    }
 
 
 
