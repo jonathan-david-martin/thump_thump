@@ -78,14 +78,15 @@ function draw() {
       fill(255);
       text('♡',screenWidth/2,screenHeight/2);
 
-      textSize(85);
+      textSize(71);
       fill(0);
       text('we♡u',screenWidth/2,screenHeight/2-60);
 
       textSize(70);
       fill(255,0,0);
       text('we♡u',screenWidth/2,screenHeight/2-60);
-
+      countDown1.time = '';
+      countDown1.update();
 
       noLoop();
   }
@@ -105,8 +106,8 @@ function draw() {
 
       heartArr[i].location.x += heart2.velocity.x*2;
       heartArr[i].location.y += heart2.velocity.y*2;
-        heartArr[i].velocity.x+=random(-0.2,0.2);
-        heartArr[i].velocity.y+=random(-0.2,0.2);
+        heartArr[i].velocity.x+=random(-0.5,0.5);
+        heartArr[i].velocity.y+=random(-0.5,0.5);
       heartArr[i].born = millis();
       heart2.born = millis();
     }
@@ -203,10 +204,16 @@ class heart {
     this.location = createVector(x, y);
     this.velocity = createVector(random(-2, 2), random(-2, 2));
     this.player = false;
+    this.heartRate = 50;
   }
 
   timer() {
-    this.row = 9 - (millis() - this.born) / 1000;
+      if(this.player === true){
+          this.row = 9 - (millis() - this.born) / 700;
+      }
+      else {
+          this.row = 9 - (millis() - this.born) / 1000;
+      }
   }
 
   checkAlive() {
@@ -218,15 +225,9 @@ class heart {
 
   }
 
-
-  update() {
-
-      if(frameCount===1800){
-          this.blockSize*=0.75;
-      }
-
+  sound(){
       if(this.player === true){
-          if(frameCount%50===0){
+          if(frameCount%this.heartRate===0){
               wave.start();
               wave.amp(0.1);
               wave.freq(200);
@@ -249,8 +250,20 @@ class heart {
 
       }
 
-    //this.x += this.xVel;
-    //this.y += this.yVel;
+  }
+
+
+  update() {
+
+      if(round(millis() / 1000,0)===50){
+          this.blockSize=this.startSize*0.75;
+          this.heartRate = 40;
+      }
+      if(round(millis() / 1000,0)===75){
+          this.blockSize=this.startSize*0.5;
+          this.heartRate = 25;
+      }
+
     this.velocity.limit(4);
     this.location.add(this.velocity);
 
@@ -272,6 +285,7 @@ class heart {
     }
 
     this.display();
+    this.sound();
   }
 
 display() {
