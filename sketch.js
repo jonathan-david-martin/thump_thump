@@ -55,7 +55,7 @@ function draw() {
 
   }
 
-  if(countDown1.time === 97){
+  if(countDown1.time === 0){
       textAlign(CENTER,CENTER);
       textSize(500);
       fill(255,0,0);
