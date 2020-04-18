@@ -11,6 +11,7 @@ var heartArr = [];
 var countDown1;
 var screenWidth = 1000;
 var screenHeight = 600;
+var blockSizeStandard = 8;
 
 var wave;
 
@@ -19,10 +20,10 @@ var wave;
 function setup() {
   createCanvas(screenWidth, screenHeight);
   for (var i = 0; i < 8; i++) {
-    heartArr.push(new heart(random(screenWidth), random(screenHeight), 10,9));
+    heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard,9));
   }
   //heart1 = new heart(x, y, 9);
-  heart2 = new heart(400, 400, 10,9);
+  heart2 = new heart(400, 400, blockSizeStandard,9);
   heart2.velocity.setMag(0);
   heart2.player = true;
 
@@ -69,9 +70,9 @@ function draw() {
       fill(0);
       text('i♡u',screenWidth/2+8,screenHeight/2-25);
 
-      textSize(80);
+      textSize(70);
       fill(255,0,0);
-      text('i♡u',screenWidth/2+8,screenHeight/2-25);
+      text('we♡u',screenWidth/2,screenHeight/2-60);
 
 
       noLoop();
@@ -234,7 +235,7 @@ class heart {
 
     //this.x += this.xVel;
     //this.y += this.yVel;
-    this.velocity.limit(5);
+    this.velocity.limit(4);
     this.location.add(this.velocity);
 
     if (this.location.x-this.blockSize*4 < 0) {
