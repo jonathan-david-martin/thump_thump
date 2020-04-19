@@ -127,8 +127,8 @@ function draw() {
 
       heartArr[i].location.x += heart2.velocity.x*2;
       heartArr[i].location.y += heart2.velocity.y*2;
-        heartArr[i].velocity.x+=random(-1,1);
-        heartArr[i].velocity.y+=random(-1,);
+        heartArr[i].velocity.x+=random(-5,5);
+        heartArr[i].velocity.y+=random(-5,5);
       heartArr[i].born = millis();
       heart2.born = millis();
     }
