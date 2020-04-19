@@ -5,6 +5,7 @@
 var t = 0;
 var x = 200;
 var y = 200;
+var maxHearts = 6;
 var playerHeart;
 var heartArr = [];
 var countDown1;
@@ -18,7 +19,7 @@ function setup() {
     createCanvas(screenWidth, screenHeight);
     textFont("Audiowide");
     game = new Game();
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < maxHearts; i++) {
         heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard, 9));
     }
 
@@ -53,7 +54,7 @@ function draw() {
     }
 
 
-    if (heartArr.length === 0 || playerHeart.row < 0) {
+    if (heartArr.length < maxHearts || playerHeart.row < 0) {
         countDown1.color = 'red';
         countDown1.update();
 
@@ -62,11 +63,11 @@ function draw() {
 
         textSize(71);
         fill(0);
-        text('♡u♡keep♡trying♡', screenWidth / 2, screenHeight / 2 - 60);
+        text('♡keep♡trying♡', screenWidth / 2, screenHeight / 2 - 60);
 
         textSize(70);
         fill(255, 0, 0);
-        text('♡u♡keep♡trying♡', screenWidth / 2, screenHeight / 2 - 60);
+        text('♡keep♡trying♡', screenWidth / 2, screenHeight / 2 - 60);
 
         noLoop();
 
@@ -130,10 +131,10 @@ function draw() {
                 //don't compare the same object with itself
                 if(!Object.is(heartArr[j],heartArr[i])) {
                     heartArr[i].velocity.add(heartArr[j].velocity);
-                    heartArr[i].location.x += heartArr[j].velocity.x * 2;
-                    heartArr[i].location.y += heartArr[j].velocity.y * 2;
-                    heartArr[i].velocity.x += random(-5, 5);
-                    heartArr[i].velocity.y += random(-5, 5);
+                    heartArr[i].location.x += heartArr[j].velocity.x * 1.2;
+                    heartArr[i].location.y += heartArr[j].velocity.y * 1.2;
+                    //heartArr[i].velocity.x += random(-5, 5);
+                    //heartArr[i].velocity.y += random(-5, 5);
                     heartArr[i].born = millis();
                     heartArr[j].born = millis();
                 }
@@ -260,9 +261,9 @@ class heart {
 
     timer() {
         if (this.player === true) {
-            this.row = 9 - ((millis() - this.born) / 500) * (7/heartArr.length);
+            this.row = 9 - ((millis() - this.born) / 1000) * (7/heartArr.length);
         } else {
-            this.row = 9 - ((millis() - this.born) / 800) * (7/heartArr.length);
+            this.row = 9 - ((millis() - this.born) / 1600) * (7/heartArr.length);
         }
     }
 
