@@ -243,10 +243,10 @@ class heart {
 
   timer() {
       if(this.player === true){
-          this.row = 9 - (millis() - this.born) / 350;
+          this.row = 9 - ((millis() - this.born) / 350)*(12/heartArr.length);
       }
       else {
-          this.row = 9 - (millis() - this.born) / 1000;
+          this.row = 9 - ((millis() - this.born) / 1000)*(12/heartArr.length);
       }
   }
 
