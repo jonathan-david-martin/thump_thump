@@ -298,7 +298,13 @@ class heart {
           this.heartRate = 25;
       }
 
-    this.velocity.limit(4);
+      if(this.player === true){
+          this.velocity.limit(5);
+      }
+      else{
+          this.velocity.limit(4);
+      }
+
     this.location.add(this.velocity);
 
     if (this.location.x-this.blockSize*4 < 0) {
