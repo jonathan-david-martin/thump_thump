@@ -19,6 +19,8 @@ var wave;
 
 function setup() {
   createCanvas(screenWidth, screenHeight);
+    textFont("Audiowide");
+  game = new Game();
   for (var i = 0; i < 8; i++) {
     heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard,9));
   }
@@ -27,7 +29,7 @@ function setup() {
   heart2.velocity.setMag(0);
   heart2.player = true;
 
-  countDown1 = new CountDown(100, 100,100);
+  countDown1 = new CountDown(30, 30,100);
     wave = new p5.Oscillator;
     wave.setType('sine');
 
@@ -47,7 +49,10 @@ function draw() {
   heart2.update();
   heart2.checkAlive();
 
-  countDown1.update();
+  if(game.state === 'run'){
+      countDown1.update();
+  }
+
 
   if (heartArr.length === 0 || heart2.row < 0) {
       countDown1.color = 'red';
@@ -69,6 +74,24 @@ function draw() {
   }
 
   if(countDown1.time === 0){
+
+      game.state = 'end';
+      background(0);
+
+
+      for (let i = 0; i < heartArr.length; i++) {
+          heartArr[i].timer();
+          heartArr[i].update();
+          heartArr[i].checkAlive();
+      }
+      heart2.timer();
+      heart2.update();
+      heart2.checkAlive();
+
+      //countDown1.time = '';
+      //countDown1.update();
+      console.log(countDown1);
+
       textAlign(CENTER,CENTER);
       textSize(500);
       fill(255,0,0);
@@ -85,8 +108,6 @@ function draw() {
       textSize(70);
       fill(255,0,0);
       text('♡u♡win♡',screenWidth/2,screenHeight/2-60);
-      countDown1.time = '';
-      countDown1.update();
 
       noLoop();
   }
@@ -142,9 +163,9 @@ function draw() {
   //    wave.start();
   //    wave.amp(0.1);
   //}
-    if(frameCount<120){
+    if(frameCount<160){
         textAlign(CENTER,CENTER);
-        textFont("Audiowide");
+        //textFont("Audiowide");
         textSize(100);
         text("THUMP-THUMP",screenWidth/2,screenHeight/2);
         textSize(50);
@@ -155,6 +176,12 @@ function draw() {
 
 }
 
+class Game {
+    constructor(){
+        this.state = 'run';
+    }
+}
+
 class CountDown {
   constructor(x, y, availTime) {
     this.x = x;
@@ -162,26 +189,33 @@ class CountDown {
     this.score = 0;
     this.color = 'white';
     this.availTime = availTime;
+    this.time = this.availTime;
+
 
   }
   update() {
-    this.display();
-    this.time = this.availTime - round( millis() / 1000, 0);
+      if(game.state === 'run') {
+          this.time = this.availTime - round(millis() / 1000, 0);
+          this.display();
+      }
+
   }
+
+
 
   display() {
 
-    textFont("Audiowide");
-    textSize(75);
+    textSize(45);
     fill(0);
-    text( this.time, this.x, this.y);
-    textSize(70);
+    textAlign(LEFT);
+    text( 'time:'+this.time, this.x, this.y);
+    textSize(43);
     if (this.color === 'white') {
       fill(255);
     } else if (this.color === 'red') {
       fill(255, 0, 0);
     }
-    text( this.time , this.x, this.y);
+    text( 'time:'+this.time, this.x, this.y);
 
   }
 
@@ -209,7 +243,7 @@ class heart {
 
   timer() {
       if(this.player === true){
-          this.row = 9 - (millis() - this.born) / 700;
+          this.row = 9 - (millis() - this.born) / 500;
       }
       else {
           this.row = 9 - (millis() - this.born) / 1000;
