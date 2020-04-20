@@ -30,9 +30,6 @@ function setup() {
         heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard, 9));
     }
 
-    dirChangerArr.push(new dirChanger(random(screenWidth), random(screenHeight), 200, 0));
-
-
 
     playerHeart = new heart(400, 400, blockSizeStandard, 9);
     playerHeart.velocity.setMag(0);
@@ -82,6 +79,12 @@ function draw() {
 
     //if on level2 draw the quicksand
     if(game.state==='level2'){
+        if (frameCount - countDown1.elapsedFrameCount < 160) {
+            textAlign(CENTER, CENTER);
+            textSize(30);
+            text("SPACE BAR TO PLACE & ROTATE 4 DIRECTION CHANGERS", screenWidth / 2, screenHeight / 2);
+        }
+
         quickSand1.update();
         quickSand2.update();
 
@@ -227,7 +230,6 @@ function draw() {
     //check for collision with playerHeart
     for (let i = 0; i < heartArr.length; i++) {
         if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, playerHeart.location.x, playerHeart.location.y - playerHeart.blockSize * 4) < playerHeart.blockSize * 10) {
-            //countDown1.score+=10;
             heartArr[i].velocity.add(playerHeart.velocity);
             heartArr[i].location.x += playerHeart.velocity.x * 2;
             heartArr[i].location.y += playerHeart.velocity.y * 2;
@@ -236,7 +238,6 @@ function draw() {
             heartArr[i].born = millis();
             playerHeart.born = millis();
             heartArr[i].quickSandDrop = 0;
-
         }
     }
 
@@ -271,6 +272,39 @@ function draw() {
         }
     }
 
+
+    //controls
+    if (keyIsPressed && keyCode === 32) {
+
+        //check if on level 2
+        if(game.state='level2') {
+
+            //check if player is not in a directionChanger already
+            //and if they have not maxed out 4 changers
+            //otherwise, create a new dirChanger
+            let inMiddle = false;
+
+            for (let i = 0; i < dirChangerArr.length; i++) {
+                if (dist(dirChangerArr[i].x, dirChangerArr[i].y, playerHeart.location.x, playerHeart.location.y - playerHeart.blockSize * 4) < dirChangerArr[i].dia) {
+                    inMiddle = true;
+                }
+            }
+
+            if (inMiddle === false) {
+
+                dirChangerArr.push(new dirChanger(playerHeart.location.x, playerHeart.location.y, 100, 0));
+
+            }
+
+            //cycle through all the dirChangers and if you
+            //are in the middle, rotate it
+            for (let i = 0; i < dirChangerArr.length; i++) {
+                if (dist(dirChangerArr[i].x, dirChangerArr[i].y, playerHeart.location.x, playerHeart.location.y - playerHeart.blockSize * 4) < dirChangerArr[i].dia * 0.6) {
+                    dirChangerArr[i].heading += 4;
+                }
+            }
+        }
+    }
 
     if (keyIsPressed && keyCode === RIGHT_ARROW) {
         playerHeart.velocity.x += 1;
