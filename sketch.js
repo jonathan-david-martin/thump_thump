@@ -18,6 +18,7 @@ var quickSand1;
 var quickSand2;
 var dirChanger1;
 var dirChangerArr = [];
+var maxDirChangers = 2;
 
 
 
@@ -30,13 +31,10 @@ function setup() {
         heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard, 9));
     }
 
-
     playerHeart = new heart(400, 400, blockSizeStandard, 9);
     playerHeart.velocity.setMag(0);
     playerHeart.player = true;
-
-    //heartArr.push(playerHeart);
-
+    playerHeart.speedLimit = 5;
 
     countDown1 = new CountDown(30, 30, maxTime);
     wave = new p5.Oscillator;
@@ -45,10 +43,17 @@ function setup() {
 }
 
 function mousePressed() {
-
-        //console.log(game);
+    console.log(game);
+    console.log(countDown1);
 
         if(game.state === 'end') {
+            //hacky: legacy code removed a heart when time ran out
+            //game ends if any of the hearts are removed
+            //but now we are using all hearts for entire game
+            //so we will add one more heart
+            if(heartArr.length<maxHearts){
+                heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard, 9));
+            }
             game.state = 'restart';
             loop();
         }
@@ -57,10 +62,6 @@ function mousePressed() {
 
 function draw() {
     background(0);
-
-    for (let i = 0; i < dirChangerArr.length; i++) {
-        dirChangerArr[i].update();
-    }
 
     //check if heart is in directionChanger
 
@@ -79,19 +80,26 @@ function draw() {
 
     //if on level2 draw the quicksand
     if(game.state==='level2'){
-        if (frameCount - countDown1.elapsedFrameCount < 160) {
+        if (frameCount - countDown1.elapsedFrameCount < 220) {
             textAlign(CENTER, CENTER);
-            textSize(30);
-            text("SPACE BAR TO PLACE & ROTATE 4 DIRECTION CHANGERS", screenWidth / 2, screenHeight / 2);
+            textSize(34);
+            text("SPACE BAR TO PLACE & ROTATE ", screenWidth / 2, screenHeight / 2);
+            text(maxDirChangers + " DIRECTION CHANGERS", screenWidth / 2, screenHeight / 2+70);
+
         }
 
         quickSand1.update();
         quickSand2.update();
 
+
+        for (let i = 0; i < dirChangerArr.length; i++) {
+            dirChangerArr[i].update();
+        }
+
         //check for collision with quickSand
         for (let i = 0; i < heartArr.length; i++) {
-            if ((dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand1.x, quickSand1.y ) < 100)||
-                (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand2.x, quickSand2.y ) < 100)
+            if ((dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand1.x, quickSand1.y ) < quickSand1.dia*0.7)||
+                (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand2.x, quickSand2.y ) < quickSand2.dia*0.7)
                )
              {
                 if(heartArr[i].inQuicksand === false) {
@@ -210,19 +218,20 @@ function draw() {
         //restart game on level2
         game.state = 'level2';
         //create some quicksand to slow the hearts
-        quickSand1 = new quickSand(screenWidth*0.2,screenHeight*0.2,200);
-        quickSand2 = new quickSand(screenWidth*0.8,screenHeight*0.8,200);
+        quickSand1 = new quickSand(screenWidth*0.2,screenHeight*0.8,175);
+        quickSand2 = new quickSand(screenWidth*0.8,screenHeight*0.2,175);
 
         //reset the life of the hearts and increase the speed limit
         for (let i = 0; i < heartArr.length; i++) {
             heartArr[i].born = millis();
             heartArr[i].alive = true;
-            heartArr[i].speedLimit = 5;
-            playerHeart.born = millis();
-            playerHeart.alive = true;
+            heartArr[i].speedLimit = 3;
         }
         countDown1.elapsedTimeMillis = round(millis()/1000,0);
         countDown1.elapsedFrameCount = frameCount;
+        playerHeart.born = millis();
+        playerHeart.alive = true;
+        playerHeart.speedLimit = 3.5;
     }
 
 
@@ -277,10 +286,10 @@ function draw() {
     if (keyIsPressed && keyCode === 32) {
 
         //check if on level 2
-        if(game.state='level2') {
+        if(game.state==='level2') {
 
             //check if player is not in a directionChanger already
-            //and if they have not maxed out 4 changers
+            //and if they have not maxed out 3 changers
             //otherwise, create a new dirChanger
             let inMiddle = false;
 
@@ -291,16 +300,17 @@ function draw() {
             }
 
             if (inMiddle === false) {
-
-                dirChangerArr.push(new dirChanger(playerHeart.location.x, playerHeart.location.y, 100, 0));
-
+                //check if already maxed out of direction changers
+                if(dirChangerArr.length<maxDirChangers) {
+                    dirChangerArr.push(new dirChanger(playerHeart.location.x, playerHeart.location.y, 150, 0));
+                }
             }
 
             //cycle through all the dirChangers and if you
             //are in the middle, rotate it
             for (let i = 0; i < dirChangerArr.length; i++) {
                 if (dist(dirChangerArr[i].x, dirChangerArr[i].y, playerHeart.location.x, playerHeart.location.y - playerHeart.blockSize * 4) < dirChangerArr[i].dia * 0.6) {
-                    dirChangerArr[i].heading += 4;
+                    dirChangerArr[i].heading += 6;
                 }
             }
         }
@@ -377,6 +387,8 @@ class dirChanger{
     }
 
     display(){
+        fill(0);
+        ellipse(this.x,this.y,this.dia*1.03,this.dia*1.03);
         fill(255);
         ellipse(this.x,this.y,this.dia,this.dia);
         fill(0);
@@ -459,7 +471,7 @@ class CountDown {
         fill(0);
         textAlign(LEFT);
         text('time:' + this.time, this.x, this.y);
-        textSize(43);
+        textSize(44);
         if (this.color === 'white') {
             fill(255);
         } else if (this.color === 'red') {
@@ -565,11 +577,9 @@ class heart {
             this.heartRate = 25;
         }
 
-        if (this.player === true) {
-            this.velocity.limit(5);
-        } else {
-            this.velocity.limit(this.speedLimit);
-        }
+        //limit the speed based based on speedLimit property
+        this.velocity.limit(this.speedLimit);
+
 
         this.location.add(this.velocity);
 
