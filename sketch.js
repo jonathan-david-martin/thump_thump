@@ -31,19 +31,20 @@ function setup() {
     //heartArr.push(playerHeart);
 
 
-    countDown1 = new CountDown(30, 30, 100);
+    countDown1 = new CountDown(30, 30, maxTime);
     wave = new p5.Oscillator;
     wave.setType('sine');
 
 }
 
 function mousePressed() {
-        game.state = 'restart';
 
-        loop();
-        //if(game.state === 'end') {
+        //console.log(game);
 
-        //}
+        if(game.state === 'end') {
+            game.state = 'restart';
+            loop();
+        }
 
 }
 
@@ -61,7 +62,6 @@ function draw() {
         countDown1.elapsedTime = round(millis()/1000,0);
     }
 
-
     for (let i = 0; i < heartArr.length; i++) {
         heartArr[i].timer();
         heartArr[i].update();
@@ -75,13 +75,12 @@ function draw() {
         countDown1.update();
     }
 
-
     if (heartArr.length < maxHearts || playerHeart.row < 0) {
+        game.state = 'end';
         countDown1.color = 'red';
         countDown1.update();
 
         textAlign(CENTER, CENTER);
-
 
         textSize(71);
         fill(0);
@@ -99,14 +98,13 @@ function draw() {
         fill(255);
         text('♡click♡to♡restart♡', screenWidth / 2, screenHeight / 2 + 30);
 
-
-
         noLoop();
 
     }
 
-    if (countDown1.time === 0) {
-
+    if (countDown1.time === 0 && game.state === 'level2') {
+        //paint the screen black and then redraw all elements
+        //with you won message
         game.state = 'end';
         background(0);
 
@@ -139,6 +137,19 @@ function draw() {
         text('♡u♡win♡', screenWidth / 2, screenHeight / 2 - 60);
 
         noLoop();
+    }
+
+    if (countDown1.time === 0 && game.state === 'level1') {
+
+        //text('onto level 2',300,300);
+        game.state = 'level2';
+        for (let i = 0; i < heartArr.length; i++) {
+            heartArr[i].born = millis();
+            heartArr[i].alive = true;
+            playerHeart.born = millis();
+            playerHeart.alive = true;
+        }
+        countDown1.elapsedTime = round(millis()/1000,0);
     }
 
 
@@ -201,6 +212,22 @@ function draw() {
         playerHeart.velocity.y += 1;
     }
 
+    if (keyIsPressed && (key === 'd' || key === 'D')) {
+        playerHeart.velocity.x += 1;
+    }
+
+    if (keyIsPressed && (key === 'a' || key === 'A')) {
+        playerHeart.velocity.x -= 1;
+    }
+
+    if (keyIsPressed && (key === 'w' || key === 'W')) {
+        playerHeart.velocity.y -= 1;
+    }
+
+    if (keyIsPressed && (key === 's' || key === 'S')) {
+        playerHeart.velocity.y += 1;
+    }
+
     //if(keyIsPressed){
     //    wave.start();
     //    wave.amp(0.1);
@@ -211,7 +238,7 @@ function draw() {
         textSize(100);
         text("THUMP-THUMP", screenWidth / 2, screenHeight / 2);
         textSize(50);
-        text("USE ARROW KEYS", screenWidth / 2, screenHeight / 2 + 150);
+        text("ARROW KEYS OR WASD", screenWidth / 2, screenHeight / 2 + 150);
     }
 
 
