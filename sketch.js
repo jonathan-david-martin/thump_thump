@@ -15,6 +15,8 @@ var blockSizeStandard = 8;
 var maxTime = 100;
 var wave;
 var quickSand1;
+var quickSand2;
+
 
 
 function setup() {
@@ -55,22 +57,27 @@ function draw() {
     //if on level2 draw the quicksand
     if(game.state==='level2'){
         quickSand1.update();
-        //console.log(quickSand1);
+        quickSand2.update();
+
         //check for collision with quickSand
         for (let i = 0; i < heartArr.length; i++) {
-            if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand1.x, quickSand1.y ) < 100) {
+            if ((dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand1.x, quickSand1.y ) < 100)||
+                (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand2.x, quickSand2.y ) < 100)
+               )
+             {
                 if(heartArr[i].inQuicksand === false) {
                     console.log('in quicksand');
                     //noLoop();
                     heartArr[i].inQuicksand = true;
                     heartArr[i].velocity.mult(0.1);
+                    heartArr[i].quickSandDrop=3;
                 }
             }
             else{
                 //if hearts are outside of quicksand
                 //if inQuicksand still says true, it has just exited quicksand
                 if(heartArr[i].inQuicksand===true){
-                    //restore velocity
+                    //reset velocity to original value
                     heartArr[i].velocity.mult(10);
                     heartArr[i].inQuicksand=false;
                 }
@@ -88,7 +95,8 @@ function draw() {
             playerHeart.born = millis();
             playerHeart.alive = true;
         }
-        countDown1.elapsedTime = round(millis()/1000,0);
+        countDown1.elapsedTimeMillis = round(millis()/1000,0);
+        countDown1.elapsedFrameCount = frameCount;
     }
 
     for (let i = 0; i < heartArr.length; i++) {
@@ -173,14 +181,19 @@ function draw() {
         //restart game on level2
         game.state = 'level2';
         //create some quicksand to slow the hearts
-        quickSand1 = new quickSand(screenWidth/2,screenHeight/2,200);
+        quickSand1 = new quickSand(screenWidth*0.2,screenHeight*0.2,200);
+        quickSand2 = new quickSand(screenWidth*0.8,screenHeight*0.8,200);
+
+        //reset the life of the hearts and increase the speed limit
         for (let i = 0; i < heartArr.length; i++) {
             heartArr[i].born = millis();
             heartArr[i].alive = true;
+            heartArr[i].speedLimit = 5;
             playerHeart.born = millis();
             playerHeart.alive = true;
         }
-        countDown1.elapsedTime = round(millis()/1000,0);
+        countDown1.elapsedTimeMillis = round(millis()/1000,0);
+        countDown1.elapsedFrameCount = frameCount;
     }
 
 
@@ -196,6 +209,8 @@ function draw() {
             heartArr[i].velocity.y += random(-5, 5);
             heartArr[i].born = millis();
             playerHeart.born = millis();
+            heartArr[i].quickSandDrop = 0;
+
         }
     }
 
@@ -212,6 +227,9 @@ function draw() {
                     //heartArr[i].velocity.y += random(-5, 5);
                     heartArr[i].born = millis();
                     heartArr[j].born = millis();
+                    heartArr[i].quickSandDrop = 0;
+                    heartArr[j].quickSandDrop = 0;
+
                 }
 
             }
@@ -286,6 +304,10 @@ function checkCollision(heart){
 
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class quickSand{
 
     constructor(x,y,dia){
@@ -311,6 +333,11 @@ class Game {
     }
 }
 
+//⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚
+//⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚
+//⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚
+//⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚⌚
+
 class CountDown {
     constructor(x, y, availTime) {
         this.x = x;
@@ -319,14 +346,14 @@ class CountDown {
         this.color = 'white';
         this.availTime = availTime;
         this.time = this.availTime;
-        this.elapsedTime = 0;
-
+        this.elapsedTimeMillis = 0;
+        this.elapsedFrameCount = 0;
 
     }
 
     update() {
         if (game.state != 'end') {
-            this.time = this.availTime + this.elapsedTime - round(millis() / 1000, 0);
+            this.time = this.availTime + this.elapsedTimeMillis - round(millis() / 1000, 0);
             this.display();
         }
 
@@ -352,6 +379,11 @@ class CountDown {
 
 }
 
+//♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+//♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+//♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+//♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+
 class heart {
 
     constructor(x, y, blockSize, row) {
@@ -369,13 +401,16 @@ class heart {
         this.player = false;
         this.heartRate = 50;
         this.inQuicksand = false;
+        this.elapsedMillis = 0;
+        this.speedLimit = 4;
+        this.quickSandDrop = 0;
     }
 
     timer() {
         if (this.player === true) {
             this.row = 9 - ((millis() - this.born) / 1000) * (7/heartArr.length);
         } else {
-            this.row = 9 - ((millis() - this.born) / 1600) * (7/heartArr.length);
+            this.row = 9 - ((millis() - this.born) / 1600) * (7/heartArr.length)-this.quickSandDrop;
         }
     }
 
@@ -416,12 +451,23 @@ class heart {
 
 
     update() {
+        //this next if statement was added for level2 to reset size
+        //and heart rate to the starting values
+        if (round(millis() / 1000, 0)-countDown1.elapsedTimeMillis === 0) {
+            this.blockSize = this.startSize ;
+            this.heartRate = 50;
+        }
 
-        if (round(millis() / 1000, 0) === 50) {
-            this.blockSize = this.startSize * 0.75;
+        if (round(millis() / 1000, 0)-countDown1.elapsedTimeMillis === 25) {
+            this.blockSize = this.startSize * 0.85;
+            this.heartRate = 45;
+        }
+
+        if (round(millis() / 1000, 0)-countDown1.elapsedTimeMillis === 50) {
+            this.blockSize = this.startSize * 0.7;
             this.heartRate = 40;
         }
-        if (round(millis() / 1000, 0) === 75) {
+        if (round(millis() / 1000, 0)-countDown1.elapsedTimeMillis === 75) {
             this.blockSize = this.startSize * 0.5;
             this.heartRate = 25;
         }
@@ -429,7 +475,7 @@ class heart {
         if (this.player === true) {
             this.velocity.limit(5);
         } else {
-            this.velocity.limit(4);
+            this.velocity.limit(this.speedLimit);
         }
 
         this.location.add(this.velocity);
@@ -456,9 +502,6 @@ class heart {
     }
 
     display() {
-        //text(this.row,this.location.x-30,this.location.y);
-        //row1
-
 
         if (1 <= this.row) {
             fill(255, 0, 0);
