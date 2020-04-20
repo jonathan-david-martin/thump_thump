@@ -12,6 +12,7 @@ var countDown1;
 var screenWidth = 1000;
 var screenHeight = 600;
 var blockSizeStandard = 8;
+var maxTime = 100;
 var wave;
 
 
@@ -36,8 +37,29 @@ function setup() {
 
 }
 
+function mousePressed() {
+        game.state = 'restart';
+
+        loop();
+        //if(game.state === 'end') {
+
+        //}
+
+}
+
 function draw() {
     background(0);
+
+    if(game.state === 'restart'){
+        game.state = 'level1';
+        for (let i = 0; i < heartArr.length; i++) {
+            heartArr[i].born = millis();
+            heartArr[i].alive = true;
+            playerHeart.born = millis();
+            playerHeart.alive = true;
+        }
+        countDown1.elapsedTime = round(millis()/1000,0);
+    }
 
 
     for (let i = 0; i < heartArr.length; i++) {
@@ -49,7 +71,7 @@ function draw() {
     playerHeart.update();
     playerHeart.checkAlive();
 
-    if (game.state === 'run') {
+    if (game.state != 'end') {
         countDown1.update();
     }
 
@@ -68,6 +90,16 @@ function draw() {
         textSize(70);
         fill(255, 0, 0);
         text('♡keep♡trying♡', screenWidth / 2, screenHeight / 2 - 60);
+
+        textSize(71);
+        fill(0);
+        text('♡click♡to♡restart♡', screenWidth / 2, screenHeight / 2 + 30);
+
+        textSize(70);
+        fill(255);
+        text('♡click♡to♡restart♡', screenWidth / 2, screenHeight / 2 + 30);
+
+
 
         noLoop();
 
@@ -197,7 +229,7 @@ function checkCollision(heart){
 
 class Game {
     constructor() {
-        this.state = 'run';
+        this.state = 'level1';
     }
 }
 
@@ -209,13 +241,14 @@ class CountDown {
         this.color = 'white';
         this.availTime = availTime;
         this.time = this.availTime;
+        this.elapsedTime = 0;
 
 
     }
 
     update() {
-        if (game.state === 'run') {
-            this.time = this.availTime - round(millis() / 1000, 0);
+        if (game.state != 'end') {
+            this.time = this.availTime + this.elapsedTime - round(millis() / 1000, 0);
             this.display();
         }
 
