@@ -14,6 +14,7 @@ var screenHeight = 600;
 var blockSizeStandard = 8;
 var maxTime = 100;
 var wave;
+var quickSand1;
 
 
 function setup() {
@@ -50,6 +51,34 @@ function mousePressed() {
 
 function draw() {
     background(0);
+
+    //if on level2 draw the quicksand
+    if(game.state==='level2'){
+        quickSand1.update();
+        //console.log(quickSand1);
+        //check for collision with quickSand
+        for (let i = 0; i < heartArr.length; i++) {
+            if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, quickSand1.x, quickSand1.y ) < 100) {
+                if(heartArr[i].inQuicksand === false) {
+                    console.log('in quicksand');
+                    //noLoop();
+                    heartArr[i].inQuicksand = true;
+                    heartArr[i].velocity.mult(0.1);
+                }
+            }
+            else{
+                //if hearts are outside of quicksand
+                //if inQuicksand still says true, it has just exited quicksand
+                if(heartArr[i].inQuicksand===true){
+                    //restore velocity
+                    heartArr[i].velocity.mult(10);
+                    heartArr[i].inQuicksand=false;
+                }
+            }
+
+        }
+
+    }
 
     if(game.state === 'restart'){
         game.state = 'level1';
@@ -141,8 +170,10 @@ function draw() {
 
     if (countDown1.time === 0 && game.state === 'level1') {
 
-        //text('onto level 2',300,300);
+        //restart game on level2
         game.state = 'level2';
+        //create some quicksand to slow the hearts
+        quickSand1 = new quickSand(screenWidth/2,screenHeight/2,200);
         for (let i = 0; i < heartArr.length; i++) {
             heartArr[i].born = millis();
             heartArr[i].alive = true;
@@ -153,8 +184,8 @@ function draw() {
     }
 
 
-    //check for collision with playerHeart
 
+    //check for collision with playerHeart
     for (let i = 0; i < heartArr.length; i++) {
         if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, playerHeart.location.x, playerHeart.location.y - playerHeart.blockSize * 4) < playerHeart.blockSize * 10) {
             //countDown1.score+=10;
@@ -168,6 +199,7 @@ function draw() {
         }
     }
 
+    //check for collision only between non-player hearts
     for (let j = 0; j < heartArr.length; j++) {
         for (let i = 0; i < heartArr.length; i++) {
             if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, heartArr[j].location.x, heartArr[j].location.y - heartArr[j].blockSize * 4) < heartArr[j].blockSize * 10) {
@@ -254,6 +286,25 @@ function checkCollision(heart){
 
 }
 
+class quickSand{
+
+    constructor(x,y,dia){
+        this.x=x;
+        this.y=y;
+        this.dia=dia;
+    }
+
+    display(){
+        fill(255);
+        ellipse(this.x,this.y,this.dia,this.dia);
+    }
+
+    update(){
+        this.display();
+    }
+
+}
+
 class Game {
     constructor() {
         this.state = 'level1';
@@ -317,6 +368,7 @@ class heart {
         this.velocity = createVector(random(-2, 2), random(-2, 2));
         this.player = false;
         this.heartRate = 50;
+        this.inQuicksand = false;
     }
 
     timer() {
