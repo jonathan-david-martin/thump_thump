@@ -16,16 +16,23 @@ var maxTime = 100;
 var wave;
 var quickSand1;
 var quickSand2;
+var dirChanger1;
+var dirChangerArr = [];
 
 
 
 function setup() {
     createCanvas(screenWidth, screenHeight);
+    angleMode(DEGREES);
     textFont("Audiowide");
     game = new Game();
     for (let i = 0; i < maxHearts; i++) {
         heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard, 9));
     }
+
+    dirChangerArr.push(new dirChanger(random(screenWidth), random(screenHeight), 200, 0));
+
+
 
     playerHeart = new heart(400, 400, blockSizeStandard, 9);
     playerHeart.velocity.setMag(0);
@@ -53,6 +60,25 @@ function mousePressed() {
 
 function draw() {
     background(0);
+
+    for (let i = 0; i < dirChangerArr.length; i++) {
+        dirChangerArr[i].update();
+    }
+
+    //check if heart is in directionChanger
+
+    for (let i = 0; i < heartArr.length; i++) {
+        for (let j = 0; j < dirChangerArr.length; j++) {
+            if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, dirChangerArr[j].x, dirChangerArr[j].y) < dirChangerArr[j].dia*0.75)
+            {
+                let heartMag = heartArr[i].velocity.mag();
+                heartArr[i].velocity.x=cos(dirChangerArr[j].heading);
+                heartArr[i].velocity.y=sin(dirChangerArr[j].heading);
+                heartArr[i].velocity.mult(heartMag);
+
+            }
+        }
+    }
 
     //if on level2 draw the quicksand
     if(game.state==='level2'){
@@ -300,6 +326,39 @@ function checkCollision(heart){
         if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, heart.location.x, heart.location.y - heart.blockSize * 4) < heart.blockSize * 10) {
             return heartArr[i];
         }
+    }
+
+}
+
+//<---><---><---><---><---><--->
+//<---><---><---><---><---><--->
+//<---><---><---><---><---><--->
+//<---><---><---><---><---><--->
+class dirChanger{
+    constructor(x,y,dia,heading){
+        this.x=x;
+        this.y=y;
+        this.dia=dia;
+        this.heading=heading;
+    }
+
+    display(){
+        fill(255);
+        ellipse(this.x,this.y,this.dia,this.dia);
+        fill(0);
+        ellipse(this.x,this.y,this.dia*0.9,this.dia*0.9);
+        textSize(this.dia*0.7);
+        push();
+        translate(this.x,this.y);
+        rotate(this.heading+90);
+        fill(255);
+        textAlign(CENTER,CENTER);
+        text('↑',0,this.dia*0.05);
+        pop();
+    }
+
+    update(){
+        this.display();
     }
 
 }
