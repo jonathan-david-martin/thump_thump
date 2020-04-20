@@ -12,7 +12,7 @@ var countDown1;
 var screenWidth = 1000;
 var screenHeight = 600;
 var blockSizeStandard = 8;
-var maxTime = 100;
+var maxTime = 10;
 var wave;
 var quickSand1;
 var quickSand2;
@@ -20,6 +20,17 @@ var dirChanger1;
 var dirChangerArr = [];
 var maxDirChangers = 2;
 var quickSandDropAmt = 2;
+var osc;
+var bumpSound;
+var midiNote = 40;
+var bumpMidiNote = 80;
+var bumped = false;
+var bumpTime = 0;
+var endFrame = 0;
+var tryAgainSound;
+var winSound;
+
+var winFrame = 0;
 
 
 
@@ -30,9 +41,15 @@ function setup() {
     game = new Game();
     for (let i = 0; i < maxHearts; i++) {
         heartArr.push(new heart(random(screenWidth), random(screenHeight), blockSizeStandard, 9));
+        if(abs(screenWidth/2-heartArr[i].location.x)<heartArr[i].blockSize*14){
+            if(abs(screenWidth/2-heartArr[i].location.x)<heartArr[i].blockSize*14){
+                heartArr[i].location.x = random(screenWidth*0.4);
+                heartArr[i].location.y = random(screenHeight*0.4);
+            }
+        }
     }
 
-    playerHeart = new heart(400, 400, blockSizeStandard, 9);
+    playerHeart = new heart(screenWidth/2, screenHeight/2, blockSizeStandard, 9);
     playerHeart.velocity.setMag(0);
     playerHeart.player = true;
     playerHeart.speedLimit = 5;
@@ -40,6 +57,26 @@ function setup() {
     countDown1 = new CountDown(30, 30, maxTime);
     wave = new p5.Oscillator;
     wave.setType('sine');
+
+    osc = new p5.Oscillator();
+    osc.setType('square');
+    osc.freq(300);
+    osc.amp(0.05);
+
+    tryAgainSound = new p5.Oscillator();
+    tryAgainSound.setType('square');
+    tryAgainSound.freq(300);
+    tryAgainSound.amp(0.05);
+
+    winSound = new p5.Oscillator();
+    winSound.setType('square');
+    winSound.freq(200);
+    winSound.amp(0.1);
+
+    bumpSound = new p5.Oscillator();
+    bumpSound.setType('square');
+    bumpSound.freq(300);
+    bumpSound.amp(0.05);
 
 }
 
@@ -156,9 +193,15 @@ function draw() {
     }
 
     if (heartArr.length < maxHearts || playerHeart.row < 0) {
+        if(game.state!='end'){
+            endFrame = frameCount;
+            midiNote = 80;
+        }
         game.state = 'end';
         countDown1.color = 'red';
         countDown1.update();
+        wave.stop();
+        osc.stop();
 
         textAlign(CENTER, CENTER);
 
@@ -178,13 +221,38 @@ function draw() {
         fill(255);
         text('♡click♡to♡restart♡', screenWidth / 2, screenHeight / 2 + 30);
 
-        noLoop();
+        //noLoop();
 
     }
 
-    if (countDown1.time === 0 && game.state === 'level2') {
+    if (game.state === 'end' && countDown1.time != 0) {
+
+        //console.log('end sound true');
+        if (frameCount - endFrame < 60) {
+            //console.log('should play');
+            if (frameCount % 4 == 0) {
+                tryAgainSound.start();
+                tryAgainSound.freq(midiToFreq(int(midiNote)));
+                midiNote-=2;
+            }
+        }
+        else{
+            tryAgainSound.stop();
+            noLoop();
+        }
+
+    }
+
+
+
+
+    if (countDown1.time <= 0 && game.state === 'level2') {
         //paint the screen black and then redraw all elements
         //with you won message
+        if(game.state!='end'){
+            winFrame = frameCount;
+            midiNote = 20;
+        }
         game.state = 'end';
         background(0);
 
@@ -197,7 +265,7 @@ function draw() {
         playerHeart.update();
         playerHeart.checkAlive();
 
-        console.log(countDown1);
+        //console.log(countDown1);
 
         textAlign(CENTER, CENTER);
         textSize(500);
@@ -216,7 +284,64 @@ function draw() {
         fill(255, 0, 0);
         text('♡u♡win♡', screenWidth / 2, screenHeight / 2 - 60);
 
-        noLoop();
+        //noLoop();
+    }
+
+    if (game.state === 'end' && countDown1.time <= 0) {
+
+
+
+
+
+        //console.log('end sound true');
+        if (frameCount - winFrame < 60) {
+            textAlign(CENTER, CENTER);
+            textSize(500);
+            fill(255, 0, 0);
+            text('♡', screenWidth / 2, screenHeight / 2);
+
+            textSize(350);
+            fill(255);
+            text('♡', screenWidth / 2, screenHeight / 2);
+
+            textSize(71);
+            fill(0);
+            text('♡u♡win♡', screenWidth / 2, screenHeight / 2 - 60);
+
+            textSize(70);
+            fill(255, 0, 0);
+            text('♡u♡win♡', screenWidth / 2, screenHeight / 2 - 60);
+            //console.log('should play win sound');
+            if (frameCount % 2 == 0) {
+                winSound.start();
+                winSound.freq(midiToFreq(int(midiNote)));
+                midiNote+=3;
+            }
+        }
+        else{
+            textAlign(CENTER, CENTER);
+            textSize(500);
+            fill(255, 0, 0);
+            text('♡', screenWidth / 2, screenHeight / 2);
+
+            textSize(350);
+            fill(255);
+            text('♡', screenWidth / 2, screenHeight / 2);
+
+            textSize(71);
+            fill(0);
+            text('♡u♡win♡', screenWidth / 2, screenHeight / 2 - 60);
+
+            textSize(70);
+            fill(255, 0, 0);
+            text('♡u♡win♡', screenWidth / 2, screenHeight / 2 - 60);
+            winSound.stop();
+            osc.stop();
+            tryAgainSound.stop();;
+            bumpSound.stop();
+            noLoop();
+        }
+
     }
 
     if (countDown1.time === 0 && game.state === 'level1') {
@@ -253,8 +378,27 @@ function draw() {
             heartArr[i].born = millis();
             playerHeart.born = millis();
             heartArr[i].quickSandDrop = 0;
+            bumped = true;
+            bumpTime = frameCount;
+
         }
     }
+    if(bumped === true){
+        //console.log('bump true');
+        if (frameCount % 5 == 0) {
+            bumpSound.start();
+            bumpSound.amp(0.05);
+            bumpSound.freq(midiToFreq(int(bumpMidiNote)));
+            bumpMidiNote+=6;
+        }
+
+    }
+    if(frameCount-bumpTime>5){
+        bumpSound.stop();
+        bumped = false;
+        bumpMidiNote = 80;
+    }
+
 
     //check for collision only between non-player hearts
     for (let j = 0; j < heartArr.length; j++) {
@@ -365,6 +509,18 @@ function draw() {
         text("THUMP-THUMP", screenWidth / 2, screenHeight / 2);
         textSize(50);
         text("ARROW KEYS OR WASD", screenWidth / 2, screenHeight / 2 + 150);
+
+    }
+
+    if (frameCount < 60) {
+        if (frameCount % 10 == 0) {
+            osc.start();
+            osc.freq(midiToFreq(int(midiNote)));
+            midiNote+=12;
+        }
+    }
+    else{
+        osc.stop();
     }
 
 
@@ -538,7 +694,7 @@ class heart {
         if (this.player === true) {
             if (frameCount % this.heartRate === 0) {
                 wave.start();
-                wave.amp(0.1);
+                wave.amp(0.15);
                 wave.freq(200);
                 //wave.stop();
                 this.startTime = frameCount;
@@ -550,7 +706,7 @@ class heart {
 
             if (frameCount - this.startTime === 10) {
                 wave.start();
-                wave.amp(0.1);
+                wave.amp(0.15);
                 wave.freq(200);
                 //wave.stop();
                 this.blockSize = this.startSize * 1.2;
