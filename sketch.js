@@ -19,6 +19,7 @@ var quickSand2;
 var dirChanger1;
 var dirChangerArr = [];
 var maxDirChangers = 2;
+var quickSandDropAmt = 2;
 
 
 
@@ -67,12 +68,13 @@ function draw() {
 
     for (let i = 0; i < heartArr.length; i++) {
         for (let j = 0; j < dirChangerArr.length; j++) {
-            if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, dirChangerArr[j].x, dirChangerArr[j].y) < dirChangerArr[j].dia*0.75)
+            if (dist(heartArr[i].location.x, heartArr[i].location.y - heartArr[i].blockSize * 4, dirChangerArr[j].x, dirChangerArr[j].y) < dirChangerArr[j].dia*0.85)
             {
                 let heartMag = heartArr[i].velocity.mag();
                 heartArr[i].velocity.x=cos(dirChangerArr[j].heading);
                 heartArr[i].velocity.y=sin(dirChangerArr[j].heading);
-                heartArr[i].velocity.mult(heartMag);
+                //make the speed a little faster
+                heartArr[i].velocity.mult(heartMag*1.2);
 
             }
         }
@@ -83,6 +85,7 @@ function draw() {
         if (frameCount - countDown1.elapsedFrameCount < 220) {
             textAlign(CENTER, CENTER);
             textSize(34);
+            text("CHALLENGE LEVEL", screenWidth / 2, screenHeight / 2-70);
             text("SPACE BAR TO PLACE & ROTATE ", screenWidth / 2, screenHeight / 2);
             text(maxDirChangers + " DIRECTION CHANGERS", screenWidth / 2, screenHeight / 2+70);
 
@@ -107,7 +110,7 @@ function draw() {
                     //noLoop();
                     heartArr[i].inQuicksand = true;
                     heartArr[i].velocity.mult(0.1);
-                    heartArr[i].quickSandDrop=3;
+                    heartArr[i].quickSandDrop=quickSandDropAmt;
                 }
             }
             else{
@@ -134,6 +137,9 @@ function draw() {
         }
         countDown1.elapsedTimeMillis = round(millis()/1000,0);
         countDown1.elapsedFrameCount = frameCount;
+
+        //empty the direction changer
+        dirChangerArr = [];
     }
 
     for (let i = 0; i < heartArr.length; i++) {
@@ -231,7 +237,7 @@ function draw() {
         countDown1.elapsedFrameCount = frameCount;
         playerHeart.born = millis();
         playerHeart.alive = true;
-        playerHeart.speedLimit = 3.5;
+        playerHeart.speedLimit = 4;
     }
 
 
@@ -676,6 +682,13 @@ class heart {
         rect(this.location.x + this.blockSize * 2, this.location.y - this.blockSize * 5, this.blockSize, this.blockSize);
         rect(this.location.x + this.blockSize * 3, this.location.y - this.blockSize * 5, this.blockSize, this.blockSize);
         rect(this.location.x + this.blockSize * 4, this.location.y - this.blockSize * 5, this.blockSize, this.blockSize);
+
+        if(this.player === true){
+            fill(0);
+            rect(this.location.x - this.blockSize, this.location.y - this.blockSize * 5, this.blockSize, this.blockSize);
+            rect(this.location.x + this.blockSize, this.location.y - this.blockSize * 5, this.blockSize, this.blockSize);
+
+        }
 
         //row7
         if (7 <= this.row) {
