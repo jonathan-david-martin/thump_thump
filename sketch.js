@@ -12,7 +12,7 @@ var countDown1;
 var screenWidth = 1000;
 var screenHeight = 600;
 var blockSizeStandard = 8;
-var maxTime = 10;
+var maxTime = 100;
 var wave;
 var quickSand1;
 var quickSand2;
@@ -295,6 +295,7 @@ function draw() {
 
         //console.log('end sound true');
         if (frameCount - winFrame < 60) {
+            background(0);
             textAlign(CENTER, CENTER);
             textSize(500);
             fill(255, 0, 0);
@@ -319,6 +320,7 @@ function draw() {
             }
         }
         else{
+            background(0);
             textAlign(CENTER, CENTER);
             textSize(500);
             fill(255, 0, 0);
@@ -509,6 +511,8 @@ function draw() {
         text("THUMP-THUMP", screenWidth / 2, screenHeight / 2);
         textSize(50);
         text("ARROW KEYS OR WASD", screenWidth / 2, screenHeight / 2 + 150);
+        text("keep all ♡’s full", screenWidth / 2, screenHeight / 2 + 225);
+
 
     }
 
