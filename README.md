@@ -1,6 +1,7 @@
 # thump_thump
-# created for the ludum dare 46 game jam
+# a game created for the ludum dare 46 game jam
 # uses p5.js
+keep all ♡’s full (｡♥‿♥｡) https://thumpthump.herokuapp.com/
 
 some early versions on the first day of the game jam were saved in p5 editor.
 
