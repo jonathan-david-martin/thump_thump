@@ -119,14 +119,7 @@ function draw() {
 
     //if on level2 draw the quicksand
     if(game.state==='level2'){
-        if (frameCount - countDown1.elapsedFrameCount < 220) {
-            textAlign(CENTER, CENTER);
-            textSize(34);
-            text("CHALLENGE LEVEL", screenWidth / 2, screenHeight / 2-70);
-            text("SPACE BAR TO PLACE & ROTATE ", screenWidth / 2, screenHeight / 2);
-            text(maxDirChangers + " DIRECTION CHANGERS", screenWidth / 2, screenHeight / 2+70);
 
-        }
 
         quickSand1.update();
         quickSand2.update();
@@ -187,6 +180,19 @@ function draw() {
     playerHeart.timer();
     playerHeart.update();
     playerHeart.checkAlive();
+
+    //needed to move this here so instructions are on top of hearts
+    if(game.state === 'level2'){
+        if (frameCount - countDown1.elapsedFrameCount < 270) {
+            fill(255);
+            textAlign(CENTER, CENTER);
+            textSize(50);
+            text("CHALLENGE LEVEL", screenWidth / 2, screenHeight / 2-70);
+            text("SPACE BAR TO PLACE & ROTATE ", screenWidth / 2, screenHeight / 2);
+            text(maxDirChangers + " DIRECTION GUIDES", screenWidth / 2, screenHeight / 2+70);
+
+        }
+    }
 
     if (game.state != 'end') {
         countDown1.update();
