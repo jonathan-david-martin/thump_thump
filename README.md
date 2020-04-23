@@ -1,5 +1,5 @@
 # thump_thump
-# a game created in 72 hours for the ludum dare 46 game jam
+# a game created in 72 hours for the ludum dare 46 game jam - theme: "keep it alive"
 # uses p5.js
 keep all ♡’s full (｡♥‿♥｡) https://thumpthump.herokuapp.com/
 
