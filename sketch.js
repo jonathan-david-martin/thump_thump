@@ -100,16 +100,27 @@ function mousePressed() {
 
 function keyPressed() {
 
-        if (keyCode === UP_ARROW) {
-            playerHeart.upPressed = true;
-        } else if (keyCode === DOWN_ARROW) {
-            playerHeart.downPressed = true;
-        } else if (keyCode === LEFT_ARROW) {
-            playerHeart.leftPressed = true;
-        } else if (keyCode === RIGHT_ARROW) {
-            playerHeart.rightPressed = true;
-        }
+    if (keyCode === UP_ARROW) {
+        playerHeart.upPressed = true;
+    } else if (keyCode === DOWN_ARROW) {
+        playerHeart.downPressed = true;
+    } else if (keyCode === LEFT_ARROW) {
+        playerHeart.leftPressed = true;
+    } else if (keyCode === RIGHT_ARROW) {
+        playerHeart.rightPressed = true;
+    }
 
+
+    if (key === 'd' || key === 'D') {
+        playerHeart.rightPressed = true;
+    } else if (key === 'a' || key === 'A') {
+        playerHeart.leftPressed = true;
+    } else if (key === 'w' || key === 'W') {
+        playerHeart.upPressed = true;
+    } else if (key === 's' || key === 'S') {
+        playerHeart.downPressed = true;
+    }
+    
 }
 
 function keyReleased() {
@@ -121,6 +132,16 @@ function keyReleased() {
         playerHeart.leftPressed = false;
     } else if (keyCode == RIGHT_ARROW) {
         playerHeart.rightPressed = false;
+    }
+
+    if (key === 'd' || key === 'D') {
+        playerHeart.rightPressed = false;
+    } else if (key === 'a' || key === 'A') {
+        playerHeart.leftPressed = false;
+    } else if (key === 'w' || key === 'W') {
+        playerHeart.upPressed = false;
+    } else if (key === 's' || key === 'S') {
+        playerHeart.downPressed = false;
     }
 }
 
@@ -515,25 +536,7 @@ function draw() {
     if (playerHeart.downPressed) {
         playerHeart.velocity.y += 1;
     }
-    /*
 
-    if (keyIsPressed && (key === 'd' || key === 'D')) {
-        playerHeart.velocity.x += 1;
-    }
-
-    if (keyIsPressed && (key === 'a' || key === 'A')) {
-        playerHeart.velocity.x -= 1;
-    }
-
-    if (keyIsPressed && (key === 'w' || key === 'W')) {
-        playerHeart.velocity.y -= 1;
-    }
-
-    if (keyIsPressed && (key === 's' || key === 'S')) {
-        playerHeart.velocity.y += 1;
-    }
-
-     */
 
 
     if (frameCount < 160) {
