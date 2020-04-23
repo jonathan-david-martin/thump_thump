@@ -55,7 +55,7 @@ function setup() {
     playerHeart.speedLimit = 5;
 
     countDown1 = new CountDown(30, 30, maxTime);
-    wave = new p5.Oscillator;
+    wave = new p5.Oscillator();
     wave.setType('sine');
 
     osc = new p5.Oscillator();
@@ -96,6 +96,32 @@ function mousePressed() {
             loop();
         }
 
+}
+
+function keyPressed() {
+
+        if (keyCode === UP_ARROW) {
+            playerHeart.upPressed = true;
+        } else if (keyCode === DOWN_ARROW) {
+            playerHeart.downPressed = true;
+        } else if (keyCode === LEFT_ARROW) {
+            playerHeart.leftPressed = true;
+        } else if (keyCode === RIGHT_ARROW) {
+            playerHeart.rightPressed = true;
+        }
+
+}
+
+function keyReleased() {
+    if (keyCode == UP_ARROW) {
+        playerHeart.upPressed = false;
+    } else if (keyCode == DOWN_ARROW) {
+        playerHeart.downPressed = false;
+    } else if (keyCode == LEFT_ARROW) {
+        playerHeart.leftPressed = false;
+    } else if (keyCode == RIGHT_ARROW) {
+        playerHeart.rightPressed = false;
+    }
 }
 
 function draw() {
@@ -474,21 +500,22 @@ function draw() {
         }
     }
 
-    if (keyIsPressed && keyCode === RIGHT_ARROW) {
+    if (playerHeart.rightPressed) {
         playerHeart.velocity.x += 1;
     }
 
-    if (keyIsPressed && keyCode === LEFT_ARROW) {
+    if (playerHeart.leftPressed) {
         playerHeart.velocity.x -= 1;
     }
 
-    if (keyIsPressed && keyCode === UP_ARROW) {
+    if (playerHeart.upPressed) {
         playerHeart.velocity.y -= 1;
     }
 
-    if (keyIsPressed && keyCode === DOWN_ARROW) {
+    if (playerHeart.downPressed) {
         playerHeart.velocity.y += 1;
     }
+    /*
 
     if (keyIsPressed && (key === 'd' || key === 'D')) {
         playerHeart.velocity.x += 1;
@@ -506,10 +533,9 @@ function draw() {
         playerHeart.velocity.y += 1;
     }
 
-    //if(keyIsPressed){
-    //    wave.start();
-    //    wave.amp(0.1);
-    //}
+     */
+
+
     if (frameCount < 160) {
         textAlign(CENTER, CENTER);
         //textFont("Audiowide");
@@ -681,6 +707,11 @@ class heart {
         this.elapsedMillis = 0;
         this.speedLimit = 4;
         this.quickSandDrop = 0;
+        this.rightPressed = false;
+        this.leftPressed = false;
+        this.upPressed = false;
+        this.downPressed = false;
+
     }
 
     timer() {
